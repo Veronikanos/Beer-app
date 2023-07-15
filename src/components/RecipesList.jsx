@@ -1,36 +1,44 @@
-import {useEffect, useMemo} from 'react';
-import {useBeerStore} from '../store/store';
+import {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useStore} from '../store/store';
 import {RecipeItem} from './RecipeItem';
+import {shallow} from 'zustand/shallow'
 
-export const RecipesList = () => {
-  const recipes = useBeerStore((state) => state.recipes);
-  const fetchRecipes = useBeerStore((state) => state.fetchRecipes);
-  const selectedRecipes = useBeerStore(
-    (state) => state.selectedRecipes
-  );
-  const setSelectedRecipes = useBeerStore(
-    (state) => state.setSelectedRecipes
-  );
-  const deleteSelectedRecipes = useBeerStore(
-    (state) => state.deleteSelectedRecipes
-  );
+const RecipesList = () => {
+
+  const { recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes } = useStore(
+    ({ recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes }) => ({ recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes }),
+    shallow
+  )
+
+  const [isInitialFetchDone, setInitialFetchDone] = useState(false);
 
   useEffect(() => {
-    fetchRecipes();
-  }, [fetchRecipes]);
+    const fetchData = async () => {
+      await fetchRecipes();
+      setInitialFetchDone(true);
+    };
 
-  useEffect(() => {}, [recipes.length]);
+    fetchData();
+  }, []);
 
-  //   const renderedItemsPerPage = beers.slice(0, 15);
-  //   console.log(renderedItemsPerPage);
+//   useEffect(() => {
+//     recipesRef.current = recipes;
+//   }, [recipes]);
 
+  useEffect(() => {
+    if (isInitialFetchDone && recipes.length < 15) {
+      fetchRecipes();
+    }
+  }, [fetchRecipes, isInitialFetchDone, recipes]);
+
+  
   // handle mouse button clicks
   const visibleItems = useMemo(() => recipes.slice(0, 15), [recipes]);
 
   const handleRightMouseClick = (e, recipe) => {
     e.preventDefault();
-    console.log(visibleItems);
-    // const foundRecipeById = visibleItems.find(item => item.id === id);
+    // console.log(visibleItems);
+
     if (!selectedRecipes.includes(recipe)) {
       setSelectedRecipes([...selectedRecipes, recipe]);
     } else {
@@ -38,11 +46,6 @@ export const RecipesList = () => {
         selectedRecipes.filter((item) => item !== recipe)
       );
     }
-    // console.log(selectedRecipes);
-    // visibleItems.filter(item => item.id === id)
-    // if (visibleItems.filter(item => item.id === id)){
-    //     console.log(id);
-    // }
   };
 
   const handleDeleteButtonClick = () => {
@@ -51,7 +54,8 @@ export const RecipesList = () => {
 
   return (
     <div>
-      {selectedRecipes.length > 0 && (
+        {console.log(recipes)}
+       {selectedRecipes.length > 0 && (
         <button onClick={handleDeleteButtonClick}>Delete</button>
       )}
       <ol>
@@ -68,3 +72,5 @@ export const RecipesList = () => {
     </div>
   );
 };
+
+export default memo(RecipesList);

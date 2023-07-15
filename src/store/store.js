@@ -1,15 +1,25 @@
-import { create } from 'zustand'
+import { create } from 'zustand';
 
-export const useBeerStore = create((set) => ({
+export const useStore = create((set, get) => ({
   recipes: [],
   selectedRecipes: [],
+  page: 1,
+
   fetchRecipes: async () => {
+    const page = get().page;
+    const recipes = get().recipes;
+    console.log(page);
+    // if (recipes.length > 0) {
+    //     return;
+    //   }
     try {
-    const response = await fetch('https://api.punkapi.com/v2/beers?page=1')
-    const jsonData = await response.json();
-    set((state) => ({ 
-        recipes: jsonData
-    }))
+      const response = await fetch(`https://api.punkapi.com/v2/beers?page=${page}`);
+      const jsonData = await response.json();
+      console.log("fetch");
+      set((state) => ({
+        recipes: [...state.recipes, ...jsonData],
+        page: state.page + 1, 
+      }));
     } catch (e) {
         console.error(e.message);
     }
@@ -26,3 +36,5 @@ export const useBeerStore = create((set) => ({
     selectedRecipes: []
   })),
 }))
+
+// console.log(useStore);
