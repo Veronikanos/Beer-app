@@ -6,7 +6,7 @@ export const RecipeItem = ({recipe, handleRightMouseClick, isSelected, handleCli
       };
 
   return (
-    <li onContextMenu={(e) => handleRightMouseClick(e, recipe)} onClick={()=>handleClick(recipe)}
+    <li onContextMenu={(e) => handleRightMouseClick(e, recipe)} onClick={() => handleClick(recipe)}
         style={itemStyle}>
       {recipe.name}
       <p>{recipe.description}</p>

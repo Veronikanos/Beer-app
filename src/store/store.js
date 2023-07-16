@@ -4,6 +4,7 @@ export const useStore = create((set, get) => ({
   recipes: [],
   selectedRecipes: [],
   page: 1,
+  detailedRecipe: null,
 
   fetchRecipes: async () => {
     const page = get().page;
@@ -35,6 +36,17 @@ export const useStore = create((set, get) => ({
     recipes: state.recipes.filter(item => !state.selectedRecipes.includes(item)),
     selectedRecipes: []
   })),
+
+  setDetailedRecipe: (detailedRecipe) =>
+  set((state) => ({
+    detailedRecipe,
+  })),
+
+  deleteDetailedRecipe: () =>
+  set((state) => ({
+    detailedRecipe: null,
+  })),
+
 }))
 
 // console.log(useStore);

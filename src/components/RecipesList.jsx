@@ -6,8 +6,8 @@ import {shallow} from 'zustand/shallow'
 
 const RecipesList = () => {
 
-  const { recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes } = useStore(
-    ({ recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes }) => ({ recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes }),
+  const { recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes, setDetailedRecipe } = useStore(
+    ({ recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes, setDetailedRecipe }) => ({ recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes, setDetailedRecipe }),
     shallow
   )
 
@@ -54,15 +54,17 @@ const RecipesList = () => {
   };
 
   let navigate = useNavigate();
+
   const handleClick = (recipe) => {
-    if (!selectedRecipes.includes(recipe)) {
-        setSelectedRecipes([...selectedRecipes, recipe]);
-      } else {
+    // if (!selectedRecipes.includes(recipe)) {
+    //     setSelectedRecipes([...selectedRecipes, recipe]);
+    //   } else {
         setSelectedRecipes(
           selectedRecipes.filter((selectedRecipe) => selectedRecipe !== recipe)
         );
-      }
-    navigate(`/${recipe.id}`);
+    //   }
+    setDetailedRecipe(recipe);
+    navigate(`/recipes/${recipe.id}`);
   }
 
   return (
