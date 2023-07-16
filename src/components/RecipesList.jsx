@@ -1,4 +1,5 @@
 import {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import { useNavigate } from "react-router-dom";
 import {useStore} from '../store/store';
 import {RecipeItem} from './RecipeItem';
 import {shallow} from 'zustand/shallow'
@@ -52,6 +53,18 @@ const RecipesList = () => {
     deleteSelectedRecipes();
   };
 
+  let navigate = useNavigate();
+  const handleClick = (recipe) => {
+    if (!selectedRecipes.includes(recipe)) {
+        setSelectedRecipes([...selectedRecipes, recipe]);
+      } else {
+        setSelectedRecipes(
+          selectedRecipes.filter((selectedRecipe) => selectedRecipe !== recipe)
+        );
+      }
+    navigate(`/${recipe.id}`);
+  }
+
   return (
     <div>
         {console.log(recipes)}
@@ -65,6 +78,7 @@ const RecipesList = () => {
             key={item.id}
             recipe={item}
             handleRightMouseClick={handleRightMouseClick}
+            handleClick={handleClick}
             isSelected={selectedRecipes.includes(item)}
           />
         ))}
