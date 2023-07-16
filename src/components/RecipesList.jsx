@@ -18,13 +18,10 @@ const RecipesList = () => {
       await fetchRecipes();
       setInitialFetchDone(true);
     };
-
-    fetchData();
+    if (!recipes.length){
+       fetchData(); 
+    }
   }, []);
-
-//   useEffect(() => {
-//     recipesRef.current = recipes;
-//   }, [recipes]);
 
   useEffect(() => {
     if (isInitialFetchDone && recipes.length < 15) {
