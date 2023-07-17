@@ -47,6 +47,11 @@ export const useStore = create((set, get) => ({
     detailedRecipe: null,
   })),
 
+  shiftRecipes: () =>
+ set(state => ({
+        recipes: state.recipes.slice(5)
+      }))
+
 }))
 
 // console.log(useStore);

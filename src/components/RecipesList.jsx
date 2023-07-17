@@ -1,4 +1,4 @@
-import {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {memo, useEffect, useMemo, useRef, useState} from 'react';
 import { useNavigate } from "react-router-dom";
 import {useStore} from '../store/store';
 import {RecipeItem} from './RecipeItem';
@@ -6,13 +6,14 @@ import {shallow} from 'zustand/shallow'
 
 const RecipesList = () => {
 
-  const { recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes, setDetailedRecipe } = useStore(
-    ({ recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes, setDetailedRecipe }) => ({ recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes, setDetailedRecipe }),
+  const { recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes, setDetailedRecipe, shiftRecipes } = useStore(
+    ({ recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes, setDetailedRecipe, shiftRecipes }) => ({ recipes, fetchRecipes, selectedRecipes, setSelectedRecipes, deleteSelectedRecipes, setDetailedRecipe, shiftRecipes }),
     shallow
   )
 
   const [isInitialFetchDone, setInitialFetchDone] = useState(false);
 
+// first render with fetch and put data to zustand store, check if it is not reopened page after visiting Details page.
   useEffect(() => {
     const fetchData = async () => {
       await fetchRecipes();
@@ -23,6 +24,9 @@ const RecipesList = () => {
     }
   }, []);
 
+  console.log(selectedRecipes);
+
+  // updating state when there is less than 15 recipes left
   useEffect(() => {
     if (isInitialFetchDone && recipes.length < 15) {
       fetchRecipes();
@@ -31,7 +35,8 @@ const RecipesList = () => {
 
   
   // handle mouse button clicks
-  const visibleItems = useMemo(() => recipes.slice(0, 15), [recipes]);
+  let visibleItems = useMemo(() => recipes.slice(0, 15), [recipes]);
+
 
   const handleRightMouseClick = (e, recipe) => {
     e.preventDefault();
@@ -60,67 +65,31 @@ const RecipesList = () => {
     navigate(`/recipes/${recipe.id}`);
   }
 
-// const options = {
-//     root: document.querySelector("ol").lastElementChild,
-//     rootMargin: '0px',
-//     threshold: 1.0
-//   }
-  
-  const [isIntersecting, setIsIntersecting] = useState(false);
   const ref = useRef(null);
 
+// implement observer for the end of the list
   useEffect(() => {
-    if (isInitialFetchDone) {
         const observer = new IntersectionObserver(
         ([entry]) => { // <- first intersection
-            setIsIntersecting(entry.isIntersecting);
-            console.log("isIntersecting:", entry.isIntersecting);
-
+            if (entry.isIntersecting){
+            shiftRecipes();
+            }
         }, 
-        
-        // { rootMargin: "-300px" }
       );
-    //   observer.observe(ref.current);
-  
+
     
       if (ref.current) {
         console.log("ref.current:", ref.current);
         observer.observe(ref.current);
-      }
       
       return () => {
         if (ref.current) {
             observer.unobserve(ref.current);
           }
-      }  }
-  }, [isInitialFetchDone]);
-
-  useEffect(() => {
-    if (isIntersecting) {
-//       const el = ref.current.querySelector("ol").lastElementChild;
-      console.log(ref);
+      }  
     }
-  }, [isIntersecting]);
+  }, [shiftRecipes, isInitialFetchDone]);
 
-   
-//   const callback = (entries, observer) => {
-//     entries.forEach(entry => {
-//       // do something
-//     })
-//   }
-   
-//   const observer = new IntersectionObserver(callback, options)
-
-// const ref = useRef(null);
-
-// useEffect(() => {
-//     const observer = new IntersectionObserver(entries => {
-//       if (entries[0].isIntersecting) {
-//        console.log("intersecting");
-//         }
-//     });
-//     observer.observe(ref.current);
-//   }, []);
 
   return (
     <div>
@@ -145,7 +114,7 @@ const RecipesList = () => {
           />
         ))}
       </ol>
-      <div ref={ref} />
+      <div ref={isInitialFetchDone? ref : null} />
     </div>
   );
 };
