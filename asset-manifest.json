@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Beer-app/static/css/main.073c9b0a.css",
+    "main.js": "/Beer-app/static/js/main.96925ec2.js",
+    "index.html": "/Beer-app/index.html",
+    "main.073c9b0a.css.map": "/Beer-app/static/css/main.073c9b0a.css.map",
+    "main.96925ec2.js.map": "/Beer-app/static/js/main.96925ec2.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.073c9b0a.css",
+    "static/js/main.96925ec2.js"
+  ]
+}
