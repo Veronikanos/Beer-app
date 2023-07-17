@@ -112,14 +112,6 @@ const RecipesList = () => {
       {selectedRecipes.length > 0 && (
         <button onClick={handleDeleteButtonClick}>Delete</button>
       )}
-      <h2>Beer list is here:</h2>
-      <p>
-        Click <i>left</i> mouse button to see recipe page
-      </p>
-      <p>
-        Click <i>right</i> mouse button to select/unselect recipe
-      </p>
-
       <ol>
         {visibleItems.map((item, idx) => (
           <RecipeItem
