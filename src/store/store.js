@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import {create} from 'zustand';
 
 export const useStore = create((set, get) => ({
   recipes: [],
@@ -8,50 +8,45 @@ export const useStore = create((set, get) => ({
 
   fetchRecipes: async () => {
     const page = get().page;
-    const recipes = get().recipes;
-    console.log(page);
-    // if (recipes.length > 0) {
-    //     return;
-    //   }
+
     try {
-      const response = await fetch(`https://api.punkapi.com/v2/beers?page=${page}`);
+      const response = await fetch(
+        `https://api.punkapi.com/v2/beers?page=${page}`
+      );
       const jsonData = await response.json();
-      console.log("fetch");
       set((state) => ({
         recipes: [...state.recipes, ...jsonData],
-        page: state.page + 1, 
+        page: state.page + 1,
       }));
     } catch (e) {
-        console.error(e.message);
+      console.error(e.message);
     }
-
   },
   setSelectedRecipes: (selectedRecipes) =>
-  set((state) => ({
-    selectedRecipes,
-  })),
+    set((state) => ({
+      selectedRecipes,
+    })),
 
   deleteSelectedRecipes: () =>
-  set((state) => ({
-    recipes: state.recipes.filter(item => !state.selectedRecipes.includes(item)),
-    selectedRecipes: []
-  })),
+    set((state) => ({
+      recipes: state.recipes.filter(
+        (item) => !state.selectedRecipes.includes(item)
+      ),
+      selectedRecipes: [],
+    })),
 
   setDetailedRecipe: (detailedRecipe) =>
-  set((state) => ({
-    detailedRecipe,
-  })),
+    set((state) => ({
+      detailedRecipe,
+    })),
 
   deleteDetailedRecipe: () =>
-  set((state) => ({
-    detailedRecipe: null,
-  })),
+    set((state) => ({
+      detailedRecipe: null,
+    })),
 
   shiftRecipes: () =>
- set(state => ({
-        recipes: state.recipes.slice(5)
-      }))
-
-}))
-
-// console.log(useStore);
+    set((state) => ({
+      recipes: state.recipes.slice(5),
+    })),
+}));
